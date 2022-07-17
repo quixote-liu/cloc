@@ -15,6 +15,8 @@ func main() {
 	if len(args) == 1 {
 		fmt.Printf("[ERROR]: missing arguments, see 'cloc help'")
 		os.Exit(ExitCodeFailed)
+	} else if len(args) == 2 {
+		args = append(args, "help")
 	}
 
 	path := args[1]
@@ -32,14 +34,27 @@ func main() {
 		os.Exit(ExitCodeFailed)
 	}
 
-	// parse directory and file
-	if s.IsDir() {
-		// parse directory
-	} else {
-		// parse single file
+	opts, code, err := parseRawOptions(args[2:])
+	if err != nil {
+		fmt.Printf("[ERROR]: %v", err)
+		os.Exit(code)
 	}
 
-	os.Exit(ExitCodeFailed)
+	// get the instance of command
+	var cmd cmder
+	if s.IsDir() {
+		cmd = newDir(path)
+	} else {
+		cmd = newFile(path)
+	}
+
+	// run command
+	code, err = cmd.run(opts)
+	if err != nil {
+		fmt.Printf("[ERROR]: %v", err)
+	}
+
+	os.Exit(code)
 }
 
 const helptext = `if you want count file, like JavaScript file, you can input:
@@ -52,6 +67,7 @@ const helptext = `if you want count file, like JavaScript file, you can input:
 	-----    TypeScript
 	-----    HTML
 	-----    SCSS
+	-----    CSS
 
 	if you want count directory, you can input:
 
@@ -60,6 +76,6 @@ const helptext = `if you want count file, like JavaScript file, you can input:
 	the directory census does not support options.
 `
 
-func transformRawOptions(raws []string) (map[string]string, error) {
-
+type cmder interface {
+	run(opts map[string]string) (code int, err error)
 }
