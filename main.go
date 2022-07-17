@@ -40,9 +40,9 @@ func main() {
 	// get the instance of command
 	var cmd cmder
 	if s.IsDir() {
-		cmd = newDir(path)
+		cmd = newDirCmd(path)
 	} else {
-		cmd = newFile(path)
+		cmd = newFileCmd(path)
 	}
 
 	// run command

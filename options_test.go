@@ -14,15 +14,15 @@ func TestParseRawOptions(t *testing.T) {
 		expectCode int
 		wantErr    bool
 	}{
-		{"[0]should pass with correct raw options", []string{"-sort", "files", "-order", "desc"},
+		{"should pass with raw options [-sort files -order desc]", []string{"-sort", "files", "-order", "desc"},
 			map[string]string{"sort": "files", "order": "desc"}, ExitCodeSuccess, false},
-		{"[1]should pass with correct raw options", []string{"-sort", "code"},
+		{"should pass with raw options [-sort code]", []string{"-sort", "code"},
 			map[string]string{"sort": "code"}, ExitCodeSuccess, false},
-		{"[2]should pass with correct raw options", []string{"-order", "asc"},
+		{"should pass with raw options [-order asc]", []string{"-order", "asc"},
 			map[string]string{"order": "asc"}, ExitCodeSuccess, false},
-		{"[3]should respond error with incorrect raw options", []string{"-error", "asc"},
+		{"should respond error with raw options [-error asc]", []string{"-error", "asc"},
 			nil, ExitCodeFailed, true},
-		{"[4]should respond empty value with empty raw options", []string{},
+		{"should respond empty value with empty raw options", []string{},
 			map[string]string{}, ExitCodeSuccess, false},
 	}
 	for _, tt := range tests {

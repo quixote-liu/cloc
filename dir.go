@@ -2,19 +2,33 @@ package main
 
 import "fmt"
 
-type Dir struct {
-	path string
+type dirCmd struct {
+	path     string
+	orderOpt Optioner
 }
 
-func newDir(path string) cmder {
-	return &Dir{
-		path: path,
+func newDirCmd(path string) cmder {
+	return &dirCmd{
+		path:     path,
+		orderOpt: newOrderOption(),
 	}
 }
 
-func (d *Dir) run(opts map[string]string) (code int, err error) {
-	fmt.Println("options:", opts)
-	code = 0
-	fmt.Println("in dir running")
+func (d *dirCmd) run(opts map[string]string) (code int, err error) {
+	if len(opts) == 0 {
+		// read directory messages
+
+	}
+
+	opts = d.orderOpt.extract(opts)
+	if len(opts) != 0 {
+		return ExitCodeFailed, fmt.Errorf("the count of directory does not support options: [%s]", serializeMap(opts))
+	}
+
 	return
+}
+
+func (d *dirCmd) readFileNames() error {
+	
+	return nil
 }

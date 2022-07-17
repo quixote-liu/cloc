@@ -11,6 +11,7 @@ func parseRawOptions(raws []string) (map[string]string, int, error) {
 	if opts[0] == "" {
 		opts = opts[1:]
 	}
+	allOptions := []Optioner{newOrderOption(), newSortOption()}
 	ans := make(map[string]string, len(opts))
 	for _, opt := range opts {
 		oo := strings.Split(strings.TrimSuffix(opt, ":"), ":")
@@ -31,10 +32,10 @@ func parseRawOptions(raws []string) (map[string]string, int, error) {
 	return ans, ExitCodeSuccess, nil
 }
 
-var allOptions = []Option{newOrderOption(), newSortOption()}
-
-type Option interface {
+type Optioner interface {
 	match(tag, value string) bool
+	extract(opts map[string]string) map[string]string
+	value() string
 }
 
 const (
@@ -44,6 +45,7 @@ const (
 )
 
 type orderOption struct {
+	v      string
 	tag    string
 	values []string
 }
@@ -65,6 +67,20 @@ func (o *orderOption) match(tag, value string) bool {
 	return true
 }
 
+func (o *orderOption) extract(opts map[string]string) map[string]string {
+	for tag, val := range opts {
+		if o.match(tag, val) {
+			o.v = val
+			delete(opts, tag)
+		}
+	}
+	return opts
+}
+
+func (o *orderOption) value() string {
+	return o.v
+}
+
 const (
 	sortTag          = "sort"
 	sortValueCode    = "code"
@@ -74,6 +90,7 @@ const (
 )
 
 type sortOption struct {
+	v      string
 	tag    string
 	values []string
 }
@@ -93,4 +110,18 @@ func (o *sortOption) match(tag, value string) bool {
 		return false
 	}
 	return true
+}
+
+func (o *sortOption) extract(opts map[string]string) map[string]string {
+	for tag, val := range opts {
+		if o.match(tag, val) {
+			o.v = val
+			delete(opts, tag)
+		}
+	}
+	return opts
+}
+
+func (o *sortOption) value() string {
+	return o.v
 }

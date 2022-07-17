@@ -8,3 +8,11 @@ func contains(src []string, target string) bool {
 	}
 	return false
 }
+
+func serializeMap(m map[string]string) string {
+	var res string
+	for k, v := range m {
+		res += "-" + k + " " + v
+	}
+	return res
+}
