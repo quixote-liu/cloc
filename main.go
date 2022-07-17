@@ -13,9 +13,6 @@ const (
 func main() {
 	args := os.Args
 	if len(args) == 1 {
-		fmt.Printf("[ERROR]: missing arguments, see 'cloc help'")
-		os.Exit(ExitCodeFailed)
-	} else if len(args) == 2 {
 		args = append(args, "help")
 	}
 
@@ -30,13 +27,13 @@ func main() {
 	// check the correctness of file path
 	s, err := os.Stat(path)
 	if err != nil {
-		fmt.Printf("[ERROR]: %v", err)
+		fmt.Println("[ERROR]: ", err)
 		os.Exit(ExitCodeFailed)
 	}
 
 	opts, code, err := parseRawOptions(args[2:])
 	if err != nil {
-		fmt.Printf("[ERROR]: %v", err)
+		fmt.Println("[ERROR]: ", err)
 		os.Exit(code)
 	}
 
@@ -51,7 +48,7 @@ func main() {
 	// run command
 	code, err = cmd.run(opts)
 	if err != nil {
-		fmt.Printf("[ERROR]: %v", err)
+		fmt.Println("[ERROR]: ", err)
 	}
 
 	os.Exit(code)

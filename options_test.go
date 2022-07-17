@@ -22,7 +22,7 @@ func TestParseRawOptions(t *testing.T) {
 			map[string]string{"order": "asc"}, ExitCodeSuccess, false},
 		{"[3]should respond error with incorrect raw options", []string{"-error", "asc"},
 			nil, ExitCodeFailed, true},
-		{"[3]should respond empty value with empty raw options", []string{},
+		{"[4]should respond empty value with empty raw options", []string{},
 			map[string]string{}, ExitCodeSuccess, false},
 	}
 	for _, tt := range tests {

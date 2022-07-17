@@ -15,7 +15,7 @@ func parseRawOptions(raws []string) (map[string]string, int, error) {
 	for _, opt := range opts {
 		oo := strings.Split(strings.TrimSuffix(opt, ":"), ":")
 		if len(oo) != 2 {
-			return nil, ExitCodeFailed, fmt.Errorf("the option is error: %s", strings.Join(oo, " "))
+			return nil, ExitCodeFailed, fmt.Errorf("the option is error: [-%s]", strings.Join(oo, " "))
 		}
 		var ok bool
 		for _, o := range allOptions {
@@ -25,7 +25,7 @@ func parseRawOptions(raws []string) (map[string]string, int, error) {
 			}
 		}
 		if !ok {
-			return nil, ExitCodeFailed, fmt.Errorf("the option is error: %s", strings.Join(oo, " "))
+			return nil, ExitCodeFailed, fmt.Errorf("the option is error: [-%s]", strings.Join(oo, " "))
 		}
 	}
 	return ans, ExitCodeSuccess, nil
