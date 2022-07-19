@@ -54,9 +54,9 @@ func main() {
 	os.Exit(code)
 }
 
-const helptext = `if you want count file, like JavaScript file, you can input:
+const helptext = `if you want count code file, like JavaScript file, you can input:
 
-	cloc ./demo.js -sort code -order desc
+	cloc ./demo.js -sort code
 	
 	the cloc tool support these types of file:
 	-----    JavaScript
@@ -65,12 +65,11 @@ const helptext = `if you want count file, like JavaScript file, you can input:
 	-----    HTML
 	-----    SCSS
 	-----    CSS
+	-----    Golang
 
 	if you want count directory, you can input:
 
 	cloc ./dirdemo
-
-	the directory census does not support options.
 `
 
 type cmder interface {

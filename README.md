@@ -1,5 +1,5 @@
 # cloc
-统计指定目录下的各类语言代码文件的行数，支持的特性：
+统计指定目录下的各类语言代码文件的代码行数、空白行数、注释行数，支持的特性：
 - 支持指定类型的代码文件
 - 支持分开统计有效的代码行数、注释行数、空白行数
 - 支持按照不同的字段进行排序展示
@@ -19,7 +19,7 @@
 ## 示例
 
 ```shell
-cloc /src -sort code -order asc
+cloc /cloc -sort code -order asc
 ```
 会打印输出为：
 ```
@@ -53,6 +53,8 @@ cloc /src -sort code -order asc
 
 ## 参数说明
 
+### sort
+
 | sort | 说明 |
 | ----- | ----- |
 | files | 文件数量 |
@@ -60,10 +62,11 @@ cloc /src -sort code -order asc
 | comment | 注释行数 |
 | blank | 空白行数 |
 
+### order
 
 | order | 说明 |
 | ----- | ----- |
 | desc | 降序 |
 | asc | 升序 |
 
-`order`不支持统计单个代码文件
+注意: `order`不支持统计单个代码文件
