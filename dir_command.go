@@ -62,7 +62,7 @@ func (cmd *dirCmd) readFileNames(path, prefix string) {
 			continue
 		}
 
-		// read file points
+		// read page points
 		ext := filepath.Ext(p)
 		pj, miss := newPageJudger(ext)
 		if miss {
