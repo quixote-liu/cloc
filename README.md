@@ -19,7 +19,36 @@
 ## 示例
 
 ```shell
-cloc /src -sort code -order desc
+cloc /src -sort code -order asc
+```
+会打印输出为：
+```
+│----.gitignore
+│----LICENSE
+│----README.md
+│----cloc
+│----dir_command.go ---------->[codes: 112]
+│----go.mod
+│----go.sum
+│----main.go ---------->[codes: 58]
+│----options.go ---------->[codes: 112]
+│----options_test.go ---------->[codes: 37]
+│----page_command.go ---------->[codes: 44]
+│----page_judge.go ---------->[codes: 65]
+│----page_point.go ---------->[codes: 67]
+│----testdata
+│----│----dir
+│----│----│----heihei
+│----│----│----│----here
+│----│----│----hello.go ---------->[codes: 0]
+│----│----│----text
+│----│----heihei.go ---------->[codes: 37]
+│----│----hello.html ---------->[codes: 0]
+│----│----text
+│----util.go ---------->[codes: 20]
+
+[codes total]: 552
+
 ```
 
 ## 参数说明

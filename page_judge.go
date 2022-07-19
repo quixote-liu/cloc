@@ -25,16 +25,16 @@ func (pj *pageJudge) notHaveNotes() bool {
 
 func (pj *pageJudge) beginWithMultilineNotes(line string) bool {
 	begin := pj.multilineNotesChars[0]
-	return strings.HasPrefix(line, begin)
+	return strings.HasPrefix(strings.TrimSpace(line), begin)
 }
 
 func (pj *pageJudge) tailWithMultilineNotes(line string) bool {
 	tail := pj.multilineNotesChars[1]
-	return strings.HasSuffix(line, tail)
+	return strings.HasSuffix(strings.TrimSpace(line), tail)
 }
 
 func (pj *pageJudge) isSingleLineNotes(line string) bool {
-	return strings.HasPrefix(line, pj.singleLineNotesChar)
+	return strings.HasPrefix(strings.TrimSpace(line), pj.singleLineNotesChar)
 }
 
 func (pj *pageJudge) isBlank(line string) bool {

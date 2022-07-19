@@ -12,7 +12,10 @@ type dirCmd struct {
 	orderOpt Optioner
 	sortOpt  Optioner
 
-	files int
+	files         int64
+	codesTotal    int64
+	blanksTotal   int64
+	commentsTotal int64
 }
 
 func newDirCmd(path string) cmder {
@@ -30,9 +33,19 @@ func (cmd *dirCmd) run(opts map[string]string) (int, error) {
 		return ExitCodeFailed, fmt.Errorf("the count of directory does not support options: [%s]", serializeMap(opts))
 	}
 	cmd.readFileNames(cmd.path, "")
-	if cmd.sortOpt.value() == sortValueFiles {
-		fmt.Println()
+	fmt.Println()
+	switch cmd.sortOpt.value() {
+	case sortValueFiles:
 		fmt.Printf("the all files number: %d\n", cmd.files)
+	case sortValueBlank:
+		fmt.Printf("[blanks total]: %d\n", cmd.blanksTotal)
+	case sortValueCode:
+		fmt.Printf("[codes total]: %d\n", cmd.codesTotal)
+	case sortValueComment:
+		fmt.Printf("[comments total]: %d\n", cmd.commentsTotal)
+	default:
+		fmt.Printf("[total]: codes: %d, comments: %d, blanks: %d\n\n", cmd.codesTotal,
+			cmd.commentsTotal, cmd.blanksTotal)
 	}
 	return ExitCodeSuccess, nil
 }
@@ -74,6 +87,13 @@ func (cmd *dirCmd) readFileNames(path, prefix string) {
 			fmt.Println(prefix + e.Name() + " [ERROR: read failed]")
 			continue
 		}
+
+		// total directory page messages
+		cmd.codesTotal += int64(pp.codes)
+		cmd.commentsTotal += int64(pp.comments)
+		cmd.blanksTotal += int64(pp.blanks)
+
+		// print the result
 		var tail string
 		switch sortValue {
 		case sortValueCode:
