@@ -70,3 +70,17 @@ cloc /cloc -sort code -order asc
 | asc | 升序 |
 
 注意: `order`不支持统计单个代码文件
+
+## 安装并使用
+
+下载：
+
+```shell
+go install github.com/quixote-liu/cloc@latest
+```
+
+现在二进制文件已经在你的GOPATH下面了，在直接使用前确保你的GOPATH在环境变量里面：
+```shell
+cloc ./src
+```
+
