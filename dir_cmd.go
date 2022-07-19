@@ -19,36 +19,36 @@ func newDirCmd(path string) cmder {
 	}
 }
 
-func (d *dirCmd) run(opts map[string]string) (int, error) {
-	opts = d.orderOpt.extract(opts)
+func (cmd *dirCmd) run(opts map[string]string) (int, error) {
+	opts = cmd.orderOpt.extract(opts)
 	if len(opts) != 0 {
 		return ExitCodeFailed, fmt.Errorf("the count of directory does not support options: [%s]", serializeMap(opts))
 	}
-	d.readFileNames(d.path, "")
+	cmd.readFileNames(cmd.path, "")
 	return ExitCodeSuccess, nil
 }
 
-func (d *dirCmd) readFileNames(path, prefix string) {
+func (cmd *dirCmd) readFileNames(path, prefix string) {
 	entries, err := os.ReadDir(path)
 	if err != nil {
 		printfErr(fmt.Errorf("failed to read directory: %v", err))
 		os.Exit(ExitCodeFailed)
 	}
-	entries = d.sortEntries(entries)
+	entries = cmd.sortEntries(entries)
 	prefix += "│----"
 	for _, e := range entries {
 		fmt.Println(prefix + e.Name())
 		if e.IsDir() {
 			p := filepath.Join(path, e.Name())
-			d.readFileNames(p, prefix)
+			cmd.readFileNames(p, prefix)
 			continue
 		}
 	}
 }
 
-func (d *dirCmd) sortEntries(values []os.DirEntry) []os.DirEntry {
+func (cmd *dirCmd) sortEntries(values []os.DirEntry) []os.DirEntry {
 	var less func(i, j int) bool
-	switch d.orderOpt.value() {
+	switch cmd.orderOpt.value() {
 	case orderValueDesc:
 		less = func(i, j int) bool {
 			return values[i].Name() > values[j].Name()

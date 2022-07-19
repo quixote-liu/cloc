@@ -42,7 +42,7 @@ func main() {
 	if s.IsDir() {
 		cmd = newDirCmd(path)
 	} else {
-		cmd = newFileCmd(path)
+		cmd = newPageCmd(path)
 	}
 
 	// run command
