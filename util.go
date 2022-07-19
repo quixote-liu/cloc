@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func contains(src []string, target string) bool {
 	for _, v := range src {
 		if v == target {
@@ -15,4 +17,8 @@ func serializeMap(m map[string]string) string {
 		res += "-" + k + " " + v
 	}
 	return res
+}
+
+func printfErr(err error) {
+	fmt.Printf("[ERROR]: %v\n", err)
 }

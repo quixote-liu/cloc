@@ -27,13 +27,13 @@ func main() {
 	// check the correctness of file path
 	s, err := os.Stat(path)
 	if err != nil {
-		fmt.Println("[ERROR]: ", err)
+		printfErr(err)
 		os.Exit(ExitCodeFailed)
 	}
 
 	opts, code, err := parseRawOptions(args[2:])
 	if err != nil {
-		fmt.Println("[ERROR]: ", err)
+		printfErr(err)
 		os.Exit(code)
 	}
 
@@ -48,7 +48,7 @@ func main() {
 	// run command
 	code, err = cmd.run(opts)
 	if err != nil {
-		fmt.Println("[ERROR]: ", err)
+		printfErr(err)
 	}
 
 	os.Exit(code)

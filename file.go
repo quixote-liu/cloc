@@ -1,7 +1,11 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -16,9 +20,18 @@ func newFileCmd(path string) cmder {
 }
 
 func (f *fileCmd) run(opts map[string]string) (code int, err error) {
-	fmt.Println("options:", opts)
-	code = 0
-	fmt.Println("in file running")
+	ext := filepath.Ext(f.path)
+	fn, miss := newFileNoter(ext)
+	if miss {
+		return ExitCodeFailed, fmt.Errorf("does not support the file(%s) with extension '%s'", f.path, ext)
+	}
+	fp, err := f.extractPoints(fn)
+	if err != nil {
+		return ExitCodeFailed, err
+	}
+
+	// TODO: print result
+
 	return
 }
 
@@ -28,8 +41,17 @@ type filePoint struct {
 	comments int
 }
 
-func (f *fileCmd) extractPoints(fj fileJudger) filePoint {
+func (f *fileCmd) extractPoints(fj fileJudger) (fp filePoint, err error) {
+	content, err := os.ReadFile(f.path)
+	if err != nil {
+		return
+	}
+	scanner := bufio.NewScanner(bytes.NewBuffer(content))
+	for scanner.Scan() {
+		// TODO: optimize logic to extract file points.
+	}
 
+	return
 }
 
 type fileJudger interface {
@@ -39,12 +61,10 @@ type fileJudger interface {
 	matchSingleNote(line string) bool
 }
 
-type multiLineNote [2]string
-
 type fileJudge struct {
 	notHaveN       bool
 	singleLineNote string
-	multiLineNote  multiLineNote
+	multiLineNote  []string
 }
 
 func (fj *fileJudge) notHaveNote() bool {
@@ -79,17 +99,19 @@ func newFileNoter(ext string) (fj fileJudger, miss bool) {
 	ext = strings.TrimPrefix(ext, ".")
 	switch {
 	case contains(jsExtensions, ext):
-		fj = &fileJudge{singleLineNote: "//", multiLineNote: multiLineNote{"/*", "*/"}}
+		fj = &fileJudge{singleLineNote: "//", multiLineNote: []string{"/*", "*/"}}
 	case contains(jsonExtensions, ext):
 		fj = &fileJudge{notHaveN: true}
 	case contains(tsExtensions, ext):
-		fj = &fileJudge{singleLineNote: "//", multiLineNote: multiLineNote{"/*", "*/"}}
+		fj = &fileJudge{singleLineNote: "//", multiLineNote: []string{"/*", "*/"}}
 	case contains(htmlExtensions, ext):
-		fj = &fileJudge{multiLineNote: multiLineNote{"<!--", "-->"}}
+		fj = &fileJudge{multiLineNote: []string{"<!--", "-->"}}
 	case contains(scssExtensions, ext):
-		fj = &fileJudge{singleLineNote: "//", multiLineNote: multiLineNote{"/*", "*/"}}
+		fj = &fileJudge{singleLineNote: "//", multiLineNote: []string{"/*", "*/"}}
 	case contains(cssExtensions, ext):
-		fj = &fileJudge{multiLineNote: multiLineNote{"/*", "*/"}}
+		fj = &fileJudge{multiLineNote: []string{"/*", "*/"}}
+	case contains(goExtensions, ext):
+		fj = &fileJudge{singleLineNote: "//", multiLineNote: []string{"/*", "*/"}}
 	default:
 		miss = true
 	}

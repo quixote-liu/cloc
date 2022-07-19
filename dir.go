@@ -31,7 +31,7 @@ func (d *dirCmd) run(opts map[string]string) (int, error) {
 func (d *dirCmd) readFileNames(path, prefix string) {
 	entries, err := os.ReadDir(path)
 	if err != nil {
-		fmt.Printf("[ERROR]: failed to read file: %v\n", err)
+		printfErr(fmt.Errorf("failed to read directory: %v\n", err))
 		os.Exit(ExitCodeFailed)
 	}
 	entries = d.sortEntries(entries)
