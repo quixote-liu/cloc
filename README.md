@@ -4,7 +4,7 @@
 - 支持分开统计有效的代码行数、注释行数、空白行数
 - 支持按照不同的字段进行排序展示
 
-# 支持的语言
+## 支持的语言
 
 | language | extension |
 | --- | --- |
@@ -16,13 +16,13 @@
 | CSS | css |
 | Golang | go |
 
-# 示例
+## 示例
 
 ```shell
 cloc /src -sort code -order desc
 ```
 
-# 参数说明
+## 参数说明
 
 | sort | 说明 |
 | ----- | ----- |
@@ -30,7 +30,6 @@ cloc /src -sort code -order desc
 | code | 代码数量 |
 | comment | 注释行数 |
 | blank | 空白行数 |
-
 
 
 | order | 说明 |
