@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -12,46 +11,16 @@ const (
 
 func main() {
 	args := os.Args
-	if len(args) == 1 {
-		args = append(args, "help")
-	}
 
-	path := args[1]
+	cmd := NewCommand(args)
 
-	// if subcommand is 'help'
-	if path == "help" {
-		fmt.Printf("%v\n", helptext)
-		os.Exit(ExitCodeSuccess)
-	}
-
-	// check the correctness of file path
-	s, err := os.Stat(path)
+	err := cmd.Run()
 	if err != nil {
 		printfErr(err)
 		os.Exit(ExitCodeFailed)
 	}
 
-	opts, code, err := parseRawOptions(args[2:])
-	if err != nil {
-		printfErr(err)
-		os.Exit(code)
-	}
-
-	// get the instance of command
-	var cmd cmder
-	if s.IsDir() {
-		cmd = newDirCmd(path)
-	} else {
-		cmd = newPageCmd(path)
-	}
-
-	// run command
-	code, err = cmd.run(opts)
-	if err != nil {
-		printfErr(err)
-	}
-
-	os.Exit(code)
+	os.Exit(ExitCodeSuccess)
 }
 
 const helptext = `if you want count code file, like JavaScript file, you can input:
@@ -66,6 +35,10 @@ const helptext = `if you want count code file, like JavaScript file, you can inp
 	-----    SCSS
 	-----    CSS
 	-----    Golang
+	-----    rust
+	-----    C#
+	-----    java
+	-----    C/C++
 
 	if you want count directory, you can input:
 
