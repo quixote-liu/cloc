@@ -183,11 +183,6 @@ func newOrderOption() *orderOption {
 	}
 }
 
-func (o *orderOption) match(arg string) (bool, error) {
-
-	return true, nil
-}
-
 func (o *orderOption) extract(args []string) ([]string, error) {
 	mat := stringsContains(o.names, args[0])
 	if !mat {
