@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -12,6 +13,10 @@ type Command struct {
 	sortOpt  *sortOption
 	orderOpt *orderOption
 	fileOpt  *fileOption
+
+	outer io.WriteCloser
+
+	targetFileInfo os.FileInfo
 }
 
 func NewCommand(args []string) (*Command, error) {
@@ -26,10 +31,13 @@ func NewCommand(args []string) (*Command, error) {
 	sortOpt := newSortOption()
 	orderOpt := newOrderOption()
 	fileOpt := newFileOption()
+	var fileInfo os.FileInfo
 
 	args = args[1:]
 	var err error
 	for len(args) > 0 {
+		originLength := len(args)
+
 		args, err = sortOpt.extract(args)
 		if err != nil {
 			return nil, err
@@ -44,26 +52,79 @@ func NewCommand(args []string) (*Command, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		if len(args) == 1 {
+			fileInfo, err = os.Stat(args[0])
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if len(args) == originLength {
+			return nil, fmt.Errorf("the command %s is undefined", args[0])
+		}
 	}
 
-	return &Command{}
+	if fileInfo == nil {
+		return nil, errors.New("missing target file")
+	}
+
+	var outer io.WriteCloser
+	if fileOpt.isMatched {
+		file, err := os.Create(fileOpt.path)
+		if err != nil {
+			return nil, fmt.Errorf("output file error: %v", err)
+		}
+		outer = file
+	} else {
+		outer = os.Stdout
+	}
+
+	return &Command{
+		sortOpt:        sortOpt,
+		orderOpt:       orderOpt,
+		fileOpt:        fileOpt,
+		outer:          outer,
+		targetFileInfo: fileInfo,
+	}, nil
 }
 
 func (c *Command) Run() error {
-	if c.shouldOutputHelpText() {
-
+	if c.isOutputHelpText {
+		fmt.Print(helptext)
+		return nil
 	}
+
+	if !c.targetFileInfo.IsDir() {
+		// TODO: optimize parse single page and output
+	} else {
+		// TODO: optimize parse dir and output
+	}
+
+	return nil
 }
 
-func (c *Command) shouldOutputHelpText() bool {
-	if len(c.args) == 1 {
-		return true
-	}
-	if len(c.args) == 2 && (c.args[1] == "-help" || c.args[1] == "-h") {
-		return true
-	}
-	return false
-}
+const helptext = `if you want count code file, like JavaScript file, you can input:
+
+	cloc ./demo.js -sort code
+	
+	the cloc tool support these types of file:
+	-----    JavaScript
+	-----    JSON
+	-----    TypeScript
+	-----    HTML
+	-----    SCSS
+	-----    CSS
+	-----    Golang
+	-----    rust
+	-----    C#
+	-----    java
+	-----    C/C++
+
+	if you want count directory, you can input:
+
+	cloc ./dirdemo
+`
 
 type sortOption struct {
 	isMatched bool
