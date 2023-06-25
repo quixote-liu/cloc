@@ -14,3 +14,7 @@ func stringsContains(src []string, target string) bool {
 func printfErr(err error) {
 	fmt.Printf("[ERROR]: %v\n", err)
 }
+
+func countQuote(text string) int {
+	
+}

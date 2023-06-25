@@ -20,14 +20,13 @@ func NewFileParser() *FileParser {
 type parser interface {
 	Name() string
 	Match(fileName string) bool
-	Parse(file *os.File) parserResult
+	Parse(file *os.File) (parserResult, error)
 }
 
 type parserResult struct {
 	CommentLines int
 	BlankLines   int
 	CodeLines    int
-	err          error
 }
 
 // parse golang file
@@ -51,11 +50,12 @@ func (p *golangParser) Match(fileName string) bool {
 	return filepath.Ext(fileName) == p.ext
 }
 
-func (p *golangParser) Parse(file *os.File) parserResult {
+func (p *golangParser) Parse(file *os.File) (parserResult, error) {
 	scaner := bufio.NewScanner(file)
 	var comments, blanks, codes int
 	var isLongCommnets bool
 	var isInLongSentence bool
+	var isInQuoteSentence bool
 	for scaner.Scan() {
 		text := scaner.Text()
 		// if the line is blank
@@ -63,7 +63,37 @@ func (p *golangParser) Parse(file *os.File) parserResult {
 			blanks++
 			continue
 		}
-		var isInQuoteSentence bool
+
+		// if the line is in quote sentence
+
+		// if the line begin comment char
+		if strings.HasPrefix(text, "\\") {
+			comments++
+			continue
+		}
+
+		// if the line has comment char in middle
+		if index := strings.Index(text, "\\"); index != -1 {
+			font := index - 1
+			var existFontQuote bool
+			for i := font; i >= 0; i-- {
+				if text[font] == '"' {
+					// skip the \"
+					if font-1 >= 0 {
+
+					} else {
+						existFontQuote = true
+						break
+					}
+				}
+			}
+		}
+
+		if strings.HasPrefix(text, "\\") {
+			comments++
+			continue
+		}
+
 		if index := strings.Index(text, "/*"); index != -1 {
 			for i := index - 1; i >= 0; i-- {
 				if text[i] != '"' {
@@ -81,7 +111,7 @@ func (p *golangParser) Parse(file *os.File) parserResult {
 
 	}
 	if err := scaner.Err(); err != nil {
-		return parserResult{err: err}
+		return parserResult{}, err
 	}
-	return parserResult{}
+	return parserResult{comments, blanks, codes}, nil
 }
