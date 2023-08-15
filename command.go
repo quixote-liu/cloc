@@ -56,7 +56,7 @@ func NewCommand(args []string) (*Command, error) {
 		if len(args) == 1 {
 			fileInfo, err = os.Stat(args[0])
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("get file information failed: %v", err)
 			}
 		}
 
@@ -65,15 +65,11 @@ func NewCommand(args []string) (*Command, error) {
 		}
 	}
 
-	if fileInfo == nil {
-		return nil, errors.New("missing target file")
-	}
-
 	var outer io.WriteCloser
 	if fileOpt.isMatched {
 		file, err := os.Create(fileOpt.path)
 		if err != nil {
-			return nil, fmt.Errorf("output file error: %v", err)
+			return nil, fmt.Errorf("output file %s error: %v", fileOpt.path, err)
 		}
 		outer = file
 	} else {

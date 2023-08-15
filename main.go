@@ -10,9 +10,7 @@ const (
 )
 
 func main() {
-	args := os.Args
-
-	cmd, err := NewCommand(args)
+	cmd, err := NewCommand(os.Args)
 	if err != nil {
 		printfErr(err)
 		os.Exit(ExitCodeFailed)
@@ -25,5 +23,3 @@ func main() {
 
 	os.Exit(ExitCodeSuccess)
 }
-
-

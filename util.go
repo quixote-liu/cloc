@@ -15,6 +15,3 @@ func printfErr(err error) {
 	fmt.Printf("[ERROR]: %v\n", err)
 }
 
-func countQuote(text string) int {
-	
-}
