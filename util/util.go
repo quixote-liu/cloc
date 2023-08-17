@@ -1,8 +1,8 @@
-package main
+package util
 
 import "fmt"
 
-func stringsContains(src []string, target string) bool {
+func StringsContains(src []string, target string) bool {
 	for _, s := range src {
 		if target == s {
 			return true
@@ -11,7 +11,6 @@ func stringsContains(src []string, target string) bool {
 	return false
 }
 
-func printfErr(err error) {
+func PrintfErr(err error) {
 	fmt.Printf("[ERROR]: %v\n", err)
 }
-

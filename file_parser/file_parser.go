@@ -1,14 +1,18 @@
 package fileparser
 
-import "path/filepath"
+import (
+	"path/filepath"
+
+	"github.com/quixote-liu/cloc/option"
+)
 
 type FileParser interface {
 }
 
-func NewFileParser(filePath string) FileParser {
+func NewFileParser(filePath string, options *option.Options) FileParser {
 	switch filepath.Ext(filePath) {
 	case ".go":
-		return newGoParser(filePath)
+		return newGoParser(filePath, options)
 	default:
 		return nil
 	}

@@ -2,6 +2,8 @@ package main
 
 import (
 	"os"
+
+	"github.com/quixote-liu/cloc/util"
 )
 
 const (
@@ -12,12 +14,12 @@ const (
 func main() {
 	cmd, err := NewCommand(os.Args)
 	if err != nil {
-		printfErr(err)
+		util.PrintfErr(err)
 		os.Exit(ExitCodeFailed)
 	}
 
 	if err = cmd.Run(); err != nil {
-		printfErr(err)
+		util.PrintfErr(err)
 		os.Exit(ExitCodeFailed)
 	}
 

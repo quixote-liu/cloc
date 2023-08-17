@@ -4,15 +4,19 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+
+	"github.com/quixote-liu/cloc/option"
 )
 
 type goparser struct {
 	filePath string
+	options  *option.Options
 }
 
-func newGoParser(filePath string) *goparser {
+func newGoParser(filePath string, options *option.Options) *goparser {
 	return &goparser{
 		filePath: filePath,
+		options:  options,
 	}
 }
 
