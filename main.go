@@ -1,9 +1,8 @@
 package main
 
 import (
+	"fmt"
 	"os"
-
-	"github.com/quixote-liu/cloc/util"
 )
 
 const (
@@ -11,15 +10,19 @@ const (
 	ExitCodeFailed
 )
 
+func printfErr(err error) {
+	fmt.Printf("[ERROR]: %v\n", err)
+}
+
 func main() {
 	cmd, err := NewCommand(os.Args)
 	if err != nil {
-		util.PrintfErr(err)
+		printfErr(err)
 		os.Exit(ExitCodeFailed)
 	}
 
 	if err = cmd.Run(); err != nil {
-		util.PrintfErr(err)
+		printfErr(err)
 		os.Exit(ExitCodeFailed)
 	}
 

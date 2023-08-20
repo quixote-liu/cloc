@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-
-	"github.com/quixote-liu/cloc/util"
 )
 
 type outerOption struct {
@@ -22,7 +20,7 @@ func newOuterOption() *outerOption {
 }
 
 func (o *outerOption) extractArgs(args []string) ([]string, error) {
-	match := util.StringsContains(o.tags, args[0])
+	match := stringsContains(o.tags, args[0])
 	if !match {
 		return args, nil
 	}

@@ -3,8 +3,6 @@ package option
 import (
 	"errors"
 	"fmt"
-
-	"github.com/quixote-liu/cloc/util"
 )
 
 type sortOption struct {
@@ -23,7 +21,7 @@ func newSortOption() *sortOption {
 }
 
 func (o *sortOption) extractArgs(args []string) ([]string, error) {
-	match := util.StringsContains(o.names, args[0])
+	match := stringsContains(o.names, args[0])
 	if !match {
 		return args, nil
 	}
