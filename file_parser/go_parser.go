@@ -3,7 +3,9 @@ package fileparser
 import (
 	"bufio"
 	"fmt"
+	"io/fs"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/quixote-liu/cloc/option"
@@ -76,5 +78,39 @@ func (p *goparser) parsePage(filePath string) (PageParserResult, error) {
 }
 
 func (p *goparser) ParseDir() error {
-	// TODO: optimize
+
+}
+
+func (p *goparser) parseDir(dir string) error {
+	dirfs := os.DirFS(p.filePath)
+
+	fileNames, err := fs.Glob(dirfs, "*")
+	if err != nil {
+		return fmt.Errorf("get the files from %s failed: %v", p.filePath, err)
+	}
+	if len(fileNames) == 0 {
+		return nil
+	}
+
+	// set sort
+	if p.options.OrderOption.IsAsc() {
+		sort.Sort(sort.StringSlice(fileNames))
+	} else if p.options.OrderOption.IsDesc() {
+		sort.Sort(sort.Reverse(sort.StringSlice(fileNames)))
+	}
+
+	// parse file
+	for _, fileName := range fileNames {
+		fileInfo, err := os.Stat(fileName)
+		if err != nil {
+			return fmt.Errorf("read status of %s failed: error = %v", fileName, err)
+		}
+		if fileInfo.IsDir() {
+			if err := p.parseDir(fileInfo.Name()); err != nil {
+				return err
+			}
+		} else {
+			
+		}
+	}
 }
